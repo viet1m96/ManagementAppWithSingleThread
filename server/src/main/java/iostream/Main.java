@@ -10,11 +10,10 @@ public class Main {
     public static void main(String[] args) {
         try {
             NioServer server = new NioServer();
+            Runtime.getRuntime().addShutdownHook(new Thread(server::emergency));
             server.run(PORT, "/home/cun/IdeaProjects/ManagementAppWithSingleThread/common/src/main/resources/Book1.csv");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }

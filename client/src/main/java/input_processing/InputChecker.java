@@ -38,7 +38,7 @@ public class InputChecker {
                 return str;
             } else if(command.contains(str)) {
                 String tmp = command.substring(0, str.length());
-                if(tmp.equals(str)) return str;
+                if(tmp.equals(str) && command.contains(" ")) return str;
             }
         }
         throw new CannotRecognizedInput();

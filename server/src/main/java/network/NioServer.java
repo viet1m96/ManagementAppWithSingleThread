@@ -14,6 +14,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class NioServer {
     private ServerSocketChannel ssChannel;
@@ -69,7 +70,6 @@ public class NioServer {
                     }
                 }
                 selector.selectedKeys().clear();
-                Runtime.getRuntime().addShutdownHook(new Thread(collector::save));
             }
         } catch (IOException | ClassNotFoundException e) {
             System.out.println(e.toString() + "at server");
@@ -77,7 +77,6 @@ public class NioServer {
             for(SocketChannel sc : clients) {
                 sc.close();
             }
-            Runtime.getRuntime().addShutdownHook(new Thread(collector::save));
         }
     }
     public void receiveAndAnswer(SocketChannel client) throws IOException, ClassNotFoundException {
@@ -104,4 +103,7 @@ public class NioServer {
         client.write(ByteBuffer.wrap(baos.toByteArray()));
     }
 
+    public void emergency() {
+        collector.save();
+    }
 }
