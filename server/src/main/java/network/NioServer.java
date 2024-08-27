@@ -81,15 +81,21 @@ public class NioServer {
     }
     public void receiveAndAnswer(SocketChannel client) throws IOException, ClassNotFoundException {
         Request req = this.getRequest(client);
-        invoker.setCommand(req);
-        invoker.setCollection(collector);
-        Response res = invoker.call(req);
-        this.sendResponse(client, res);
-        client.close();
+        if(req != null) {
+            invoker.setCommand(req);
+            invoker.setCollection(collector);
+            Response res = invoker.call(req);
+            this.sendResponse(client, res);
+        }
+
     }
     public Request getRequest(SocketChannel client) throws IOException, ClassNotFoundException {
         data = ByteBuffer.allocate(1024);
-        client.read(data);
+        int tmp = client.read(data);
+        if(tmp == -1) {
+            client.close();
+            return null;
+        }
         bais = new ByteArrayInputStream(data.array());
         in = new ObjectInputStream(bais);
         return (Request) in.readObject();
